@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "doomgeneric_stm32.h"
+#include "utils.h"
+
 #ifndef DOOMGENERIC_RESX
 #define DOOMGENERIC_RESX 640
 #endif  // DOOMGENERIC_RESX

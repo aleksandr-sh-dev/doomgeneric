@@ -48,7 +48,7 @@ rcsid[] = "$Id: i_x.c,v 1.6 1997/02/03 22:45:10 b1 Exp $";
 
 #include <sys/types.h>
 
-//#define CMAP256
+#define CMAP256
 
 struct FB_BitField
 {
@@ -317,56 +317,10 @@ void I_UpdateNoBlit (void)
 //
 // I_FinishUpdate
 //
-
-void I_FinishUpdate (void)
-{
-    int y;
-    int x_offset, y_offset, x_offset_end;
-    unsigned char *line_in, *line_out;
-
-    /* Offsets in case FB is bigger than DOOM */
-    /* 600 = s_Fb heigt, 200 screenheight */
-    /* 600 = s_Fb heigt, 200 screenheight */
-    /* 2048 =s_Fb width, 320 screenwidth */
-    y_offset     = (((s_Fb.yres - (SCREENHEIGHT * fb_scaling)) * s_Fb.bits_per_pixel/8)) / 2;
-    x_offset     = (((s_Fb.xres - (SCREENWIDTH  * fb_scaling)) * s_Fb.bits_per_pixel/8)) / 2; // XXX: siglent FB hack: /4 instead of /2, since it seems to handle the resolution in a funny way
-    //x_offset     = 0;
-    x_offset_end = ((s_Fb.xres - (SCREENWIDTH  * fb_scaling)) * s_Fb.bits_per_pixel/8) - x_offset;
-
-    /* DRAW SCREEN */
-    line_in  = (unsigned char *) I_VideoBuffer;
-    line_out = (unsigned char *) DG_ScreenBuffer;
-
-    y = SCREENHEIGHT;
-
-    while (y--)
-    {
-        int i;
-        for (i = 0; i < fb_scaling; i++) {
-            line_out += x_offset;
-#ifdef CMAP256
-            if (fb_scaling == 1) {
-                memcpy(line_out, line_in, SCREENWIDTH); /* fb_width is bigger than Doom SCREENWIDTH... */
-            } else {
-                int j;
-
-                for (j = 0; j < SCREENWIDTH; j++) {
-                    int k;
-                    for (k = 0; k < fb_scaling; k++) {
-                        line_out[j * fb_scaling + k] = line_in[j];
-                    }
-                }
-            }
-#else
-            //cmap_to_rgb565((void*)line_out, (void*)line_in, SCREENWIDTH);
-            cmap_to_fb((void*)line_out, (void*)line_in, SCREENWIDTH);
-#endif
-            line_out += (SCREENWIDTH * fb_scaling * (s_Fb.bits_per_pixel/8)) + x_offset_end;
-        }
-        line_in += SCREENWIDTH;
-    }
-
-	DG_DrawFrame();
+void I_FinishUpdate(void) {
+    /* Standard DOOM generic behavior */
+    memcpy(DG_ScreenBuffer, I_VideoBuffer, 320 * 200);
+    DG_DrawFrame();
 }
 
 //

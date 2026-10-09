@@ -146,6 +146,8 @@ struct color {
 };
 
 
+extern struct color colors[256];
+
 extern char *video_driver;
 extern boolean screenvisible;
 
